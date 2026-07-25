@@ -57,12 +57,12 @@
             "value": "50 lpa"
         },
         {
-            "key": "IDE",
-            "value": "vscode"
-        },
-        {
             "key": "Friend",
             "value": "nigga"
+        },
+        {
+            "key": "IDE",
+            "value": "vs code"
         }
     ]
 }

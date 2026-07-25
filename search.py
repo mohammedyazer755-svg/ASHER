@@ -8,7 +8,7 @@ def search_memory(sentence):
         key = item["key"].lower()
         if key in sentence:
             return key, item["value"]
-    return None
+    return None, None
 
 def learn_memory(sentence):
     sentence= sentence.lower()

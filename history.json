@@ -327,6 +327,38 @@
         {
             "sender": "You",
             "message": "hi"
+        },
+        {
+            "sender": "You",
+            "message": "MY favourite ide is vs code"
+        },
+        {
+            "sender": "You",
+            "message": "hi"
+        },
+        {
+            "sender": "Asher",
+            "message": "Hello Yazer!"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite ide is vs code"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your ide is vs code."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite ide "
+        },
+        {
+            "sender": "Asher",
+            "message": "I remember that your ide is vs code"
+        },
+        {
+            "sender": "You",
+            "message": "bye"
         }
     ]
 }
