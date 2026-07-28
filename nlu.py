@@ -21,7 +21,13 @@ learning_patterns = {
     "my hobby is": "Hobby",
 
     "i trust": "Trusted_Person",
-    "i study at": "College"
+    "i study at": "College",
+
+    "my favourite colour is": "Favourite_Colour",
+    "my favourite color is": "Favourite_Colour",
+
+    "my favourite sport is": "Favourite_Sport",
+    "my favorite sport is": "Favourite_Sport"
 }
 
 
@@ -33,7 +39,7 @@ def process_memory(sentence):
             value = sentence.removeprefix(pattern).strip()
 
             if not value:
-                return None, None
+                return key, None
 
             remember(key, value)
             return key, value

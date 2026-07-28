@@ -50,6 +50,17 @@ memory_intents = {
     "College": [
         ["which", "college"],
         ["where", "study"]
+    ],
+    "Favourite_Colour":[
+        ["favourite","colour"],
+        ["favourite", "color"],
+        ["colour", "like"],
+        ["color", "like"]
+    ],
+    "Favourite_Sport":[
+        ["favourite", "sport"],
+        ["favorite","sport"],
+        ["sport", "like"]
     ]
 }
 
@@ -63,12 +74,16 @@ display_names = {
     "Dream_Company": "dream company",
     "Hobby": "hobby",
     "Trusted_Person": "trusted person",
-    "College": "college"
+    "College": "college",
+    "Favourite_Colour": "favourite colour",
+    "Favourite_Sport": "favourite sport"
 }
 
 
 def detect_memory_intent(sentence):
+
     sentence = sentence.lower().strip()
+    words = sentence.replace("?", "").replace(".", "").split()
 
     for memory_key, keyword_groups in memory_intents.items():
         for keywords in keyword_groups:

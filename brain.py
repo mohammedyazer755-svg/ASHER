@@ -53,11 +53,13 @@ def respond(user_input):
     # "my favourite movie is bigil"
     key, value = process_memory(user_input)
 
-    if key and value:
+    if key :
         name = get_display_name(key)
-
-        speak(f"I'll remember that your {name} is {value}.")
-        return
+        if value :
+             speak(f"I'll remember that your {name} is {value}.")
+        else:
+            speak(f"Please tell me your {name}.")
+        return 
 
     # --------------------------------------------------
     # 2. DETECT MEMORY QUESTIONS

@@ -467,6 +467,86 @@
         {
             "sender": "You",
             "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "which movie do i like"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite food is biryani"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite food is biryani."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite food"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite food is biryani."
+        },
+        {
+            "sender": "You",
+            "message": "which food do i like"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite food is biryani."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is"
+        },
+        {
+            "sender": "Asher",
+            "message": "Please tell me your favourite movie."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite sport is kabaddi"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite sport is kabaddi."
+        },
+        {
+            "sender": "You",
+            "message": "what sport do i like"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite sport is kabaddi."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
         }
     ]
 }
