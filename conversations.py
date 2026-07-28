@@ -1,10 +1,10 @@
 from utils import speak
 from config import username , age , mom
-from responses import random_response, greatings , thanks ,goodbye, unknown
+from responses import random_response, greetings , thanks ,goodbye, unknown
 
 def handle_conversations(user_input):
     if user_input in ["hi","hello","hey","yo","wassup"]:
-        speak(random_responses(greetings))
+        speak(random_response(greetings))
         return True
     
     elif user_input in ["how are you","how are you doing","how's it going","how are u"]:

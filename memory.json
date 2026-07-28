@@ -1,68 +1,16 @@
 {
     "memory": [
         {
-            "key": "Food",
-            "value": "rasam"
+            "key": "Favourite_Movie",
+            "value": "bigil"
         },
         {
-            "key": "Fav_Colour",
-            "value": "green"
-        },
-        {
-            "key": "College",
-            "value": "sairam engineering college"
+            "key": "Favourite_Food",
+            "value": "biriyani"
         },
         {
             "key": "Dream_Company",
-            "value": "ai"
-        },
-        {
-            "key": "Fav_game",
-            "value": "Football"
-        },
-        {
-            "key": "Trusted_Person",
-            "value": "Chatgpt"
-        },
-        {
-            "key": "Movie",
-            "value": "jersey"
-        },
-        {
-            "key": "Car",
-            "value": "bmw"
-        },
-        {
-            "key": "Singer",
-            "value": "anuv jain"
-        },
-        {
-            "key": "fish",
-            "value": "fighter"
-        },
-        {
-            "key": "hobby",
-            "value": "coding"
-        },
-        {
-            "key": "bike",
-            "value": "ninja h2"
-        },
-        {
-            "key": "favourite_language",
-            "value": "python"
-        },
-        {
-            "key": "dream_salary",
-            "value": "50 lpa"
-        },
-        {
-            "key": "Friend",
-            "value": "nigga"
-        },
-        {
-            "key": "IDE",
-            "value": "vs code"
+            "value": "google"
         }
     ]
 }

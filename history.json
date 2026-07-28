@@ -359,6 +359,114 @@
         {
             "sender": "You",
             "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "hi"
+        },
+        {
+            "sender": "You",
+            "message": "hi"
+        },
+        {
+            "sender": "Asher",
+            "message": "Welcome Back Yazer"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is goat"
+        },
+        {
+            "sender": "Asher",
+            "message": "I remember that your movie is jersey"
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "I remember that your movie is jersey"
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "I remember that your movie is jersey"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "I remember that your movie is jersey"
+        },
+        {
+            "sender": "You",
+            "message": "cls"
+        },
+        {
+            "sender": "You",
+            "message": "hi "
+        },
+        {
+            "sender": "Asher",
+            "message": "Hello !"
+        },
+        {
+            "sender": "You",
+            "message": "i like bigil movie"
+        },
+        {
+            "sender": "You",
+            "message": "i like bigil movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "I don't know your favourite movie yet."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite food is biriyani"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite food is biriyani."
+        },
+        {
+            "sender": "You",
+            "message": "my dream company is google"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your dream company is google."
+        },
+        {
+            "sender": "You",
+            "message": "what movie do i like"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
         }
     ]
 }

@@ -1,4 +1,5 @@
 import random
+from config import username
 
 greetings=[ 
     f"Hello!{username}",

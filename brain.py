@@ -1,161 +1,200 @@
 from config import username
-from config import age , mom
-from memory import get_memory , remember
-from history import load_history , save_history , add_chat , show_history, clear_history
+from memory import get_memory, remember
+from history import add_chat, show_history, clear_history
 from commands import command_map
 from utils import speak
-from patterns import memory_patterns, memory_question
 from nlu import process_memory
 from conversations import handle_conversations
 from search import search_memory
+from intents import detect_memory_intent, display_names
 
 
 def greet():
-    print(f"\nHello  {username}!")
+    print(f"\nHello {username}!")
     print("I am Asher")
     print("Version 0.1")
     print("Ready to assist you.\n")
-   
+
 
 def goodbye():
-    print(f"\nGood Bye {username} machan")
-    print("See you again")
+    print(f"\nGoodbye {username}, machan!")
+    print("See you again.")
+
+
+def get_display_name(key):
+    """
+    Converts internal memory keys into natural display names.
+
+    Example:
+    Favourite_Movie -> favourite movie
+    Favourite_IDE   -> favourite IDE
+    """
+
+    return display_names.get(
+        key,
+        key.replace("_", " ").lower()
+    )
 
 
 def respond(user_input):
-    key, val = search_memory(user_input)
-    if val:
-        speak(f"I remember that your {key} is {val}")
-        return
-    
-    key, value = process_memory(user_input)
-    if key:
-        speak(f"I'll remember that your {key.lower()} is {value.lower()}.")
-        return
 
+    # Clean the input before processing it
     user_input = user_input.lower().strip()
 
-    if handle_conversations(user_input):
+    if not user_input:
+        speak("Please type something.")
         return
 
-    for pattern , key in memory_patterns.items():
-        if user_input.startswith(pattern):
-            value = user_input.replace(pattern,"").strip()
-            remember(key,value)
-            speak(f"I'll remember your favourite {key.replace('_',' ')}")
-            return
+    # --------------------------------------------------
+    # 1. LEARN NEW INFORMATION
+    # --------------------------------------------------
 
-    for questions , key in memory_question.items():
-        if user_input == questions:
-            value = get_memory(key)
-            if value:
-                speak(f"Your favourite {key.replace('_',' ').lower()} is {value}")    
-            else:
-                speak(f"I don't know your {key.replace('_',' ').lower()} yet.")
-            return
-        
+    # Example:
+    # "my favourite movie is bigil"
+    key, value = process_memory(user_input)
+
+    if key and value:
+        name = get_display_name(key)
+
+        speak(f"I'll remember that your {name} is {value}.")
+        return
+
+    # --------------------------------------------------
+    # 2. DETECT MEMORY QUESTIONS
+    # --------------------------------------------------
+
+    # Example:
+    # "what is my favourite movie?"
+    # "which movie do I like?"
+    memory_key = detect_memory_intent(user_input)
+
+    if memory_key:
+        value = get_memory(memory_key)
+        name = get_display_name(memory_key)
+
+        if value:
+            speak(f"Your {name} is {value}.")
+        else:
+            speak(f"I don't know your {name} yet.")
+
+        return
+
+    # --------------------------------------------------
+    # 3. MANUAL MEMORY COMMAND
+    # --------------------------------------------------
+
+    # Format:
+    # remember key = value
     if user_input.startswith("remember "):
-        text = user_input.replace("remember ","")
-        if "=" in text:
-            key, value = text.split("=",1)
-            key = key.strip()
-            value= value.strip()
-            remember(key,value)
-            speak(f"I'll remember that {key} is {value}")
-        else:
-            speak("Use this format. \n remember key = value")
-        return 
+        text = user_input.removeprefix("remember ").strip()
 
-    if user_input.startswith("what is "):
-        key = user_input.replace("what is","").strip()
-        value= get_memory(key)
-        if value:
-            speak(f"{key} is {value}")
-        else:
-            speak(f"i dont know {key} yet.")
+        if "=" not in text:
+            speak("Use this format: remember key = value")
+            return
+
+        key, value = text.split("=", 1)
+
+        key = key.strip()
+        value = value.strip()
+
+        if not key or not value:
+            speak("Both the memory name and value are required.")
+            return
+
+        remember(key, value)
+        speak(f"I'll remember that {key} is {value}.")
         return
-    
-    if user_input.startswith("tell me "):
-        key = user_input.replace("tell me","").strip()
-        value= get_memory(key)
+
+    # --------------------------------------------------
+    # 4. GENERIC MEMORY RETRIEVAL
+    # --------------------------------------------------
+
+    # Example:
+    # "what is hobby"
+    if user_input.startswith("what is "):
+        key = user_input.removeprefix("what is ").strip()
+        value = get_memory(key)
+
         if value:
-            speak(f"{key} is {value}")
+            speak(f"{key} is {value}.")
         else:
-            speak(f"i dont know {key} yet.")
-        
+            speak(f"I don't know {key} yet.")
+
+        return
+
+    # Example:
+    # "tell me hobby"
+    if user_input.startswith("tell me "):
+        key = user_input.removeprefix("tell me ").strip()
+        value = get_memory(key)
+
+        if value:
+            speak(f"{key} is {value}.")
+        else:
+            speak(f"I don't know {key} yet.")
+
+        return
+
+    # --------------------------------------------------
+    # 5. HISTORY COMMANDS
+    # --------------------------------------------------
+
+    if user_input == "show history":
+        print()
+        show_history()
+        return
+
+    if user_input == "clear history":
+        clear_history()
+        add_chat("System", "History cleared by user.")
+        speak("History cleared.")
+        return
+
+    # --------------------------------------------------
+    # 6. OTHER COMMANDS
+    # --------------------------------------------------
+
     if user_input in command_map:
         command_map[user_input]()
         return
-    
-    elif user_input == "what is your favourite food":
-        food = get_memory("Food")
-        if food:
-            speak(f"My favourite food is {food}")
+
+    # --------------------------------------------------
+    # 7. CASUAL CONVERSATION
+    # --------------------------------------------------
+
+    # Example:
+    # hi, hello, thanks, bye
+    if handle_conversations(user_input):
+        return
+
+    # --------------------------------------------------
+    # 8. CONTROLLED FUZZY MEMORY SEARCH
+    # --------------------------------------------------
+
+    # Fuzzy search is only used for clear memory questions.
+    # This prevents statements such as:
+    # "my favourite movie is bigil"
+    # from retrieving an old movie value.
+    memory_search_phrases = (
+        "do you remember",
+        "search memory",
+        "remember my",
+        "can you remember"
+    )
+
+    if user_input.startswith(memory_search_phrases):
+        key, value = search_memory(user_input)
+
+        if key and value:
+            name = get_display_name(key)
+            speak(f"I remember that your {name} is {value}.")
         else:
-            speak("I don't know your favourite food.")
+            speak("I couldn't find a matching memory.")
 
-    elif user_input == "which college do i study":
-        college = get_memory("College")
-        if college: 
-            speak(f"You study at {college}")
-        else:
-            speak("I don't know which college you study at.")
+        return
 
-    elif user_input == "what is my favourite colour":
-        colour = get_memory("Fav_Colour")
-        if colour:
-            speak(f"Your favourite colour is {colour}")
-        else:
-            speak("I don't know your favourite colour.")
+    # --------------------------------------------------
+    # 9. UNKNOWN INPUT
+    # --------------------------------------------------
 
-    elif user_input == "what is my dream company":
-        company = get_memory("Dream Company")
-        if company :
-            speak(f"Your dream company is {company}")
-        else:
-            speak("I don't know your dream company.")
-    
-
-    elif user_input == "what is my favourite movie":
-        movie= get_memory("Movie")
-        if movie:
-            speak(f"Your favourite movie is {movie}")
-        else:
-            speak("I don't know your favourite movie yet.")
-
-    elif user_input == "who is my trusted person":
-        trusted_person = get_memory("Trusted_Person")
-        if trusted_person:
-            speak(f"Your trusted person is {trusted_person}")
-        else:
-            speak("I don't know your trusted person.")
-
-    
-    elif user_input.startswith("my favourite movie is"):
-        movie = user_input.replace("my favourite movie is", "").strip()
-        remember("Movie",movie)
-        speak("I'll remember that.")
-    
-
-    elif user_input.startswith("my dream company is"):
-        company = user_input.replace("my dream company is", "").strip()
-        remember("Dream Company",company)
-        speak("I'll remember that")
-    
-    
-    elif user_input.startswith("i trust"):
-        trusted_person = user_input.replace("i trust", "").strip()
-        remember("Trusted_Person", trusted_person)
-        speak("I'll remember that")
-        
-    elif user_input == "show history":
-        print("\n")
-        show_history()
-    
-    elif user_input == "clear history":
-        clear_history()
-        add_chat("System", "History cleared by user.")
-        print("Asher: History cleared.")
-    
-    else :
-        speak("I don't understand that yet")
+    speak("I don't understand that yet.")
