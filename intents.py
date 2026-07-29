@@ -98,10 +98,12 @@ def detect_memory_intent(sentence, minimum_confidence=0.6):
         .split()
     )
 
-    best_intent = None
     best_score = 0.0
+    best_intents = []
 
     for memory_key, keyword_groups in memory_intents.items():
+
+        intent_best_score = 0.0
 
         for keywords in keyword_groups:
             matched_keywords = 0
@@ -112,11 +114,20 @@ def detect_memory_intent(sentence, minimum_confidence=0.6):
 
             score = matched_keywords / len(keywords)
 
-            if score > best_score:
-                best_score = score
-                best_intent = memory_key
+            if score > intent_best_score:
+                intent_best_score = score
 
-    if best_score >= minimum_confidence:
-        return best_intent, best_score
+        if intent_best_score > best_score:
+            best_score = intent_best_score
+            best_intents = [memory_key]
 
-    return None, best_score
+        elif intent_best_score == best_score and intent_best_score > 0:
+            best_intents.append(memory_key)
+
+    if best_score < minimum_confidence:
+        return None, best_score, False
+
+    if len(best_intents) > 1:
+        return None, best_score, best_intents
+
+    return best_intents[0], best_score, []

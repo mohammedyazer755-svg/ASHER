@@ -68,8 +68,18 @@ def respond(user_input):
     # Example:
     # "what is my favourite movie?"
     # "which movie do I like?"
-    memory_key, confidence = detect_memory_intent(user_input)
+    memory_key, confidence, tied_intents = detect_memory_intent(user_input)
+    if tied_intents:
+       names = [
+           get_display_name(intent)
+           for intent in tied_intents
+    ]
 
+       options = " or ".join(names)
+
+       speak(f"Did you mean {options}?")
+       return
+    
     if memory_key:
         value = get_memory(memory_key)
         name = get_display_name(memory_key)
