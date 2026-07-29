@@ -39,27 +39,33 @@ memory_intents = {
 
     "Hobby": [
         ["my", "hobby"],
-        ["what", "enjoy"]
+        ["what", "hobby"],
+        ["what", "enjoy"],
+        ["do", "for", "fun"]
     ],
 
     "Trusted_Person": [
         ["trusted", "person"],
-        ["who", "trust"]
+        ["who", "trust"],
+        ["person", "trust"]
     ],
 
     "College": [
         ["which", "college"],
-        ["where", "study"]
+        ["where", "study"],
+        ["college", "study"]
     ],
-    "Favourite_Colour":[
-        ["favourite","colour"],
-        ["favourite", "color"],
+
+    "Favourite_Colour": [
+        ["favourite", "colour"],
+        ["favorite", "color"],
         ["colour", "like"],
         ["color", "like"]
     ],
-    "Favourite_Sport":[
+
+    "Favourite_Sport": [
         ["favourite", "sport"],
-        ["favorite","sport"],
+        ["favorite", "sport"],
         ["sport", "like"]
     ]
 }
@@ -80,14 +86,37 @@ display_names = {
 }
 
 
-def detect_memory_intent(sentence):
-
+def detect_memory_intent(sentence, minimum_confidence=0.6):
     sentence = sentence.lower().strip()
-    words = sentence.replace("?", "").replace(".", "").split()
+
+    words = (
+        sentence
+        .replace("?", "")
+        .replace(".", "")
+        .replace(",", "")
+        .replace("!", "")
+        .split()
+    )
+
+    best_intent = None
+    best_score = 0.0
 
     for memory_key, keyword_groups in memory_intents.items():
-        for keywords in keyword_groups:
-            if all(word in sentence for word in keywords):
-                return memory_key
 
-    return None
+        for keywords in keyword_groups:
+            matched_keywords = 0
+
+            for keyword in keywords:
+                if keyword in words:
+                    matched_keywords += 1
+
+            score = matched_keywords / len(keywords)
+
+            if score > best_score:
+                best_score = score
+                best_intent = memory_key
+
+    if best_score >= minimum_confidence:
+        return best_intent, best_score
+
+    return None, best_score

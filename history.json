@@ -547,6 +547,58 @@
         {
             "sender": "You",
             "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is asher"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite movie is asher."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is asher."
+        },
+        {
+            "sender": "You",
+            "message": "i watched a movie yesterday"
+        },
+        {
+            "sender": "Asher",
+            "message": "I don't understand that yet."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "i watched a movie yesterday"
+        },
+        {
+            "sender": "Asher",
+            "message": "I don't understand that yet."
+        },
+        {
+            "sender": "You",
+            "message": "what do i like"
+        },
+        {
+            "sender": "Asher",
+            "message": "I don't understand that yet."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
         }
     ]
 }

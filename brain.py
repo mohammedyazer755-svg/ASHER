@@ -68,7 +68,7 @@ def respond(user_input):
     # Example:
     # "what is my favourite movie?"
     # "which movie do I like?"
-    memory_key = detect_memory_intent(user_input)
+    memory_key, confidence = detect_memory_intent(user_input)
 
     if memory_key:
         value = get_memory(memory_key)
