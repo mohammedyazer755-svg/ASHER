@@ -2,11 +2,11 @@
     "memory": [
         {
             "key": "Favourite_Movie",
-            "value": "asher"
+            "value": "bigil"
         },
         {
             "key": "Favourite_Food",
-            "value": "biryani"
+            "value": "ketchup"
         },
         {
             "key": "Dream_Company",
@@ -15,6 +15,10 @@
         {
             "key": "Favourite_Sport",
             "value": "kabaddi"
+        },
+        {
+            "key": "Favourite_Game",
+            "value": "minecraft"
         }
     ]
 }

@@ -11,6 +11,154 @@
         {
             "sender": "You",
             "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is asher"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite movie is asher."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite mmovie"
+        },
+        {
+            "sender": "Asher",
+            "message": "I don't know my favourite mmovie yet."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is asher."
+        },
+        {
+            "sender": "You",
+            "message": "change it to bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "I changed you favourite movie to bigil."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie ?"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite game is gta v"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite game is gta v."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite game"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite game is gta v."
+        },
+        {
+            "sender": "You",
+            "message": "set it as minecraft"
+        },
+        {
+            "sender": "Asher",
+            "message": "I changed you favourite game to minecraft."
+        },
+        {
+            "sender": "You",
+            "message": "what about my favourite game"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite game is minecraft."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "change it to asher"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'm not sure what you want me to change"
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite food"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite food is biryani."
+        },
+        {
+            "sender": "You",
+            "message": "change it to ketchup"
+        },
+        {
+            "sender": "Asher",
+            "message": "I changed you favourite food to ketchup."
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "what is my favourite movie"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is bigil."
+        },
+        {
+            "sender": "You",
+            "message": "clear context"
+        },
+        {
+            "sender": "Asher",
+            "message": "Conversation context cleared."
+        },
+        {
+            "sender": "You",
+            "message": "change it to michael"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'm not sure what you want me to change"
+        },
+        {
+            "sender": "You",
+            "message": "bye"
         }
     ]
 }

@@ -8,6 +8,7 @@ from conversations import handle_conversations
 from search import search_memory
 from intents import detect_memory_intent, display_names
 
+last_memory_key = None
 
 def greet():
     print(f"\nHello {username}!")
@@ -35,9 +36,28 @@ def get_display_name(key):
         key.replace("_", " ").lower()
     )
 
+def update_context_memory(new_value):
+    global last_memory_key
+
+    if not last_memory_key:
+        speak("I'm not sure what you want me to change")
+        return False
+
+    new_value = new_value.strip()
+
+    if not new_value:
+        speak("Please tell me the new value.")
+        return False
+
+    remember(last_memory_key, new_value)
+
+    name = get_display_name(last_memory_key)
+
+    speak(f"I changed you {name} to {new_value}.")
+    return True
 
 def respond(user_input):
-
+    global last_memory_key
     # Clean the input before processing it
     user_input = user_input.lower().strip()
 
@@ -56,10 +76,42 @@ def respond(user_input):
     if key :
         name = get_display_name(key)
         if value :
+             last_memory_key = key 
              speak(f"I'll remember that your {name} is {value}.")
         else:
             speak(f"Please tell me your {name}.")
         return 
+
+    #--------------------------------------------------
+    # New 2 Change it to section
+    #--------------------------------------------------
+    
+    if user_input.startswith("change it to"):
+        new_value = user_input.removeprefix("change it to ").strip()
+        update_context_memory(new_value)
+        return
+
+
+    if user_input.startswith("set it as"):
+            new_value = user_input.removeprefix("set it as ").strip()
+            update_context_memory(new_value)
+            return
+
+    if user_input.startswith("make it"):
+        new_value = user_input.removeprefix("make it ").strip()
+        update_context_memory
+        return
+    
+    if user_input.startswith("actually it is"):
+        new_value = user_input.removeprefix("actually it is ").strip()
+        update_context_memory
+        return
+
+    if user_input == "clear context":
+        last_memory_key = None
+        speak("Conversation context cleared.")
+        return
+    
 
     # --------------------------------------------------
     # 2. DETECT MEMORY QUESTIONS
@@ -81,6 +133,8 @@ def respond(user_input):
        return
     
     if memory_key:
+        last_memory_key = memory_key
+
         value = get_memory(memory_key)
         name = get_display_name(memory_key)
 
