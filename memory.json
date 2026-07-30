@@ -2,7 +2,7 @@
     "memory": [
         {
             "key": "Favourite_Movie",
-            "value": "bigil"
+            "value": "nigga"
         },
         {
             "key": "Favourite_Food",
@@ -19,6 +19,10 @@
         {
             "key": "Favourite_Game",
             "value": "minecraft"
+        },
+        {
+            "key": "Favourite_IDE",
+            "value": "VScode"
         }
     ]
 }

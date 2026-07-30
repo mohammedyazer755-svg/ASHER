@@ -8,7 +8,18 @@ from conversations import handle_conversations
 from search import search_memory
 from intents import detect_memory_intent, display_names
 
+
+# --------------------------------------------------
+# TEMPORARY CONVERSATION CONTEXT
+# --------------------------------------------------
+
 last_memory_key = None
+pending_memory_key = None
+
+
+# --------------------------------------------------
+# STARTUP AND EXIT
+# --------------------------------------------------
 
 def greet():
     print(f"\nHello {username}!")
@@ -22,9 +33,13 @@ def goodbye():
     print("See you again.")
 
 
+# --------------------------------------------------
+# HELPER FUNCTIONS
+# --------------------------------------------------
+
 def get_display_name(key):
     """
-    Converts internal memory keys into natural display names.
+    Converts an internal memory key into a readable name.
 
     Example:
     Favourite_Movie -> favourite movie
@@ -36,11 +51,16 @@ def get_display_name(key):
         key.replace("_", " ").lower()
     )
 
+
 def update_context_memory(new_value):
+    """
+    Updates the most recently discussed memory category.
+    """
+
     global last_memory_key
 
     if not last_memory_key:
-        speak("I'm not sure what you want me to change")
+        speak("I'm not sure what you want me to change.")
         return False
 
     new_value = new_value.strip()
@@ -53,85 +73,146 @@ def update_context_memory(new_value):
 
     name = get_display_name(last_memory_key)
 
-    speak(f"I changed you {name} to {new_value}.")
+    speak(f"I changed your {name} to {new_value}.")
     return True
 
+
+# --------------------------------------------------
+# MAIN RESPONSE FUNCTION
+# --------------------------------------------------
+
 def respond(user_input):
-    global last_memory_key
-    # Clean the input before processing it
-    user_input = user_input.lower().strip()
+    global last_memory_key, pending_memory_key
+
+    # Preserve the user's original capitalization
+    original_input = user_input.strip()
+    user_input = original_input.lower()
+
+    # --------------------------------------------------
+    # 1. EMPTY INPUT
+    # --------------------------------------------------
 
     if not user_input:
-        speak("Please type something.")
+        if pending_memory_key:
+            name = get_display_name(pending_memory_key)
+            speak(f"Please tell me your {name}.")
+        else:
+            speak("Please type something.")
+
         return
 
     # --------------------------------------------------
-    # 1. LEARN NEW INFORMATION
+    # 2. CANCEL PENDING MEMORY
     # --------------------------------------------------
 
-    # Example:
-    # "my favourite movie is bigil"
+    cancel_words = {
+        "cancel",
+        "never mind",
+        "nevermind",
+        "stop",
+        "skip"
+    }
+
+    if pending_memory_key and user_input in cancel_words:
+        pending_memory_key = None
+        speak("Okay, I cancelled it.")
+        return
+
+    # --------------------------------------------------
+    # 3. CAPTURE PENDING MEMORY VALUE
+    # --------------------------------------------------
+
+    if pending_memory_key:
+        value = original_input
+
+        remember(pending_memory_key, value)
+
+        name = get_display_name(pending_memory_key)
+
+        last_memory_key = pending_memory_key
+        pending_memory_key = None
+
+        speak(f"I'll remember that your {name} is {value}.")
+        return
+
+    # --------------------------------------------------
+    # 4. LEARN NEW INFORMATION
+    # --------------------------------------------------
+
     key, value = process_memory(user_input)
 
-    if key :
+    if key:
         name = get_display_name(key)
-        if value :
-             last_memory_key = key 
-             speak(f"I'll remember that your {name} is {value}.")
-        else:
-            speak(f"Please tell me your {name}.")
-        return 
 
-    #--------------------------------------------------
-    # New 2 Change it to section
-    #--------------------------------------------------
-    
-    if user_input.startswith("change it to"):
-        new_value = user_input.removeprefix("change it to ").strip()
+        if value:
+            last_memory_key = key
+            pending_memory_key = None
+
+            speak(f"I'll remember that your {name} is {value}.")
+        else:
+            pending_memory_key = key
+
+            speak(f"Please tell me your {name}.")
+
+        return
+
+    # --------------------------------------------------
+    # 5. FOLLOW-UP CONTEXT UPDATES
+    # --------------------------------------------------
+
+    if user_input.startswith("change it to "):
+        new_value = original_input[len("change it to "):].strip()
         update_context_memory(new_value)
         return
 
-
-    if user_input.startswith("set it as"):
-            new_value = user_input.removeprefix("set it as ").strip()
-            update_context_memory(new_value)
-            return
-
-    if user_input.startswith("make it"):
-        new_value = user_input.removeprefix("make it ").strip()
-        update_context_memory
+    if user_input.startswith("set it as "):
+        new_value = original_input[len("set it as "):].strip()
+        update_context_memory(new_value)
         return
-    
-    if user_input.startswith("actually it is"):
-        new_value = user_input.removeprefix("actually it is ").strip()
-        update_context_memory
+
+    if user_input.startswith("make it "):
+        new_value = original_input[len("make it "):].strip()
+        update_context_memory(new_value)
         return
+
+    if user_input.startswith("actually, it is "):
+        new_value = original_input[len("actually, it is "):].strip()
+        update_context_memory(new_value)
+        return
+
+    if user_input.startswith("actually it is "):
+        new_value = original_input[len("actually it is "):].strip()
+        update_context_memory(new_value)
+        return
+
+    # --------------------------------------------------
+    # 6. CLEAR CONVERSATION CONTEXT
+    # --------------------------------------------------
 
     if user_input == "clear context":
         last_memory_key = None
+        pending_memory_key = None
+
         speak("Conversation context cleared.")
         return
-    
 
     # --------------------------------------------------
-    # 2. DETECT MEMORY QUESTIONS
+    # 7. DETECT MEMORY QUESTIONS
     # --------------------------------------------------
 
-    # Example:
-    # "what is my favourite movie?"
-    # "which movie do I like?"
     memory_key, confidence, tied_intents = detect_memory_intent(user_input)
+
     if tied_intents:
-       names = [
-           get_display_name(intent)
-           for intent in tied_intents
-    ]
+        names = [
+            get_display_name(intent)
+            for intent in tied_intents
+        ]
 
-       options = " or ".join(names)
+        options = " or ".join(names)
 
-       speak(f"Did you mean {options}?")
-       return
-    
+        speak(f"Did you mean {options}?")
+        return
+
     if memory_key:
         last_memory_key = memory_key
 
@@ -146,13 +227,11 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 3. MANUAL MEMORY COMMAND
+    # 8. MANUAL MEMORY COMMAND
     # --------------------------------------------------
 
-    # Format:
-    # remember key = value
     if user_input.startswith("remember "):
-        text = user_input.removeprefix("remember ").strip()
+        text = original_input[len("remember "):].strip()
 
         if "=" not in text:
             speak("Use this format: remember key = value")
@@ -168,17 +247,16 @@ def respond(user_input):
             return
 
         remember(key, value)
+
         speak(f"I'll remember that {key} is {value}.")
         return
 
     # --------------------------------------------------
-    # 4. GENERIC MEMORY RETRIEVAL
+    # 9. GENERIC MEMORY RETRIEVAL
     # --------------------------------------------------
 
-    # Example:
-    # "what is hobby"
     if user_input.startswith("what is "):
-        key = user_input.removeprefix("what is ").strip()
+        key = original_input[len("what is "):].strip()
         value = get_memory(key)
 
         if value:
@@ -188,10 +266,8 @@ def respond(user_input):
 
         return
 
-    # Example:
-    # "tell me hobby"
     if user_input.startswith("tell me "):
-        key = user_input.removeprefix("tell me ").strip()
+        key = original_input[len("tell me "):].strip()
         value = get_memory(key)
 
         if value:
@@ -202,7 +278,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 5. HISTORY COMMANDS
+    # 10. HISTORY COMMANDS
     # --------------------------------------------------
 
     if user_input == "show history":
@@ -213,11 +289,12 @@ def respond(user_input):
     if user_input == "clear history":
         clear_history()
         add_chat("System", "History cleared by user.")
+
         speak("History cleared.")
         return
 
     # --------------------------------------------------
-    # 6. OTHER COMMANDS
+    # 11. OTHER COMMANDS
     # --------------------------------------------------
 
     if user_input in command_map:
@@ -225,22 +302,16 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 7. CASUAL CONVERSATION
+    # 12. CASUAL CONVERSATION
     # --------------------------------------------------
 
-    # Example:
-    # hi, hello, thanks, bye
     if handle_conversations(user_input):
         return
 
     # --------------------------------------------------
-    # 8. CONTROLLED FUZZY MEMORY SEARCH
+    # 13. CONTROLLED FUZZY MEMORY SEARCH
     # --------------------------------------------------
 
-    # Fuzzy search is only used for clear memory questions.
-    # This prevents statements such as:
-    # "my favourite movie is bigil"
-    # from retrieving an old movie value.
     memory_search_phrases = (
         "do you remember",
         "search memory",
@@ -260,7 +331,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 9. UNKNOWN INPUT
+    # 14. UNKNOWN INPUT
     # --------------------------------------------------
 
     speak("I don't understand that yet.")
