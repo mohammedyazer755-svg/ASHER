@@ -255,6 +255,66 @@
         {
             "sender": "You",
             "message": "exit"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is Interstellar"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is currently nigga. Should I change it to interstellar?"
+        },
+        {
+            "sender": "You",
+            "message": "yes"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll change your interstellar to interstellar."
+        },
+        {
+            "sender": "You",
+            "message": "exit"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is nigga"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is currently interstellar. Should I change it to nigga?"
+        },
+        {
+            "sender": "You",
+            "message": "yup"
+        },
+        {
+            "sender": "Asher",
+            "message": "I changed your favourite movie to nigga."
+        },
+        {
+            "sender": "You",
+            "message": "by favourite movie is bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is nigga."
+        },
+        {
+            "sender": "You",
+            "message": "my favourite movie is bigil"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your favourite movie is currently nigga. Should I change it to bigil?"
+        },
+        {
+            "sender": "You",
+            "message": "no"
+        },
+        {
+            "sender": "Asher",
+            "message": "Okay, I kept your existing favourite movie."
         }
     ]
 }

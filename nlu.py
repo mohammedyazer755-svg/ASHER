@@ -1,6 +1,3 @@
-from memory import remember
-
-
 learning_patterns = {
     "my favourite movie is": "Favourite_Movie",
     "my favorite movie is": "Favourite_Movie",
@@ -41,7 +38,7 @@ def process_memory(sentence):
             if not value:
                 return key, None
 
-            remember(key, value)
+            
             return key, value
 
     return None, None
