@@ -253,7 +253,7 @@ def respond(user_input):
     # 5. LEARN NEW INFORMATION
     # --------------------------------------------------
 
-    key, value = process_memory(user_input)
+    key, value = process_memory(user_input, original_input)
 
     if key:
         name = get_display_name(key)

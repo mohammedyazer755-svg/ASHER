@@ -315,6 +315,54 @@
         {
             "sender": "Asher",
             "message": "Okay, I kept your existing favourite movie."
+        },
+        {
+            "sender": "You",
+            "message": "my dream company is GOOGLE"
+        },
+        {
+            "sender": "Asher",
+            "message": "I already remember that your dream company is google."
+        },
+        {
+            "sender": "You",
+            "message": "my dream company is Google Deepmind"
+        },
+        {
+            "sender": "Asher",
+            "message": "Your dream company is currently google. Should I change it to Google Deepmind?"
+        },
+        {
+            "sender": "You",
+            "message": "yes"
+        },
+        {
+            "sender": "Asher",
+            "message": "I changed your dream company to Google Deepmind."
+        },
+        {
+            "sender": "You",
+            "message": "bye"
+        },
+        {
+            "sender": "You",
+            "message": "my favourite programming language is"
+        },
+        {
+            "sender": "Asher",
+            "message": "Please tell me your favourite programming language."
+        },
+        {
+            "sender": "You",
+            "message": "C++"
+        },
+        {
+            "sender": "Asher",
+            "message": "I'll remember that your favourite programming language is C++."
+        },
+        {
+            "sender": "You",
+            "message": "BYE"
         }
     ]
 }

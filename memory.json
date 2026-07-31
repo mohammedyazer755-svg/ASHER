@@ -10,7 +10,7 @@
         },
         {
             "key": "Dream_Company",
-            "value": "google"
+            "value": "Google Deepmind"
         },
         {
             "key": "Favourite_Sport",
@@ -23,6 +23,10 @@
         {
             "key": "Favourite_IDE",
             "value": "VScode"
+        },
+        {
+            "key": "Favourite_Language",
+            "value": "C++"
         }
     ]
 }

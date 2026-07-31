@@ -28,17 +28,27 @@ learning_patterns = {
 }
 
 
-def process_memory(sentence):
+def clean_value(value):
+    return " ".join(value.split())
+
+
+def process_memory(sentence, original_sentence=None):
     sentence = sentence.lower().strip()
+
+    if original_sentence is None:
+        original_sentence = sentence
+    else:
+        original_sentence = original_sentence.strip()
 
     for pattern, key in learning_patterns.items():
         if sentence.startswith(pattern):
-            value = sentence.removeprefix(pattern).strip()
+            value = clean_value(
+                original_sentence[len(pattern):]
+            )
 
             if not value:
                 return key, None
 
-            
             return key, value
 
     return None, None
