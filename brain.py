@@ -1,5 +1,5 @@
 from config import username
-from memory import get_memory, remember
+from memory import get_memory, remember, forget_memory
 from history import add_chat, show_history, clear_history
 from commands import command_map
 from utils import speak
@@ -7,6 +7,7 @@ from nlu import process_memory
 from conversations import handle_conversations
 from search import search_memory
 from intents import detect_memory_intent, display_names
+from deletion import detect_delete_intent
 
 
 # --------------------------------------------------
@@ -18,6 +19,8 @@ pending_memory_key = None
 
 pending_update_key = None
 pending_update_value = None
+
+pending_delete_key = None
 
 
 # --------------------------------------------------
@@ -76,7 +79,7 @@ def update_context_memory(new_value):
     old_value = get_memory(last_memory_key)
     name = get_display_name(last_memory_key)
 
-    # The value is already the same
+    # The proposed value is already stored
     if old_value and old_value.lower() == new_value.lower():
         speak(f"Your {name} is already {old_value}.")
         return False
@@ -106,8 +109,9 @@ def update_context_memory(new_value):
 def respond(user_input):
     global last_memory_key, pending_memory_key
     global pending_update_key, pending_update_value
+    global pending_delete_key
 
-    # Preserve original capitalization for pending replies
+    # Preserve original capitalization
     original_input = user_input.strip()
     user_input = original_input.lower()
 
@@ -136,7 +140,17 @@ def respond(user_input):
         "keep old",
         "keep it",
         "not now",
-        "cancel update"
+        "cancel update",
+        "don't delete it",
+        "do not delete it"
+    }
+
+    cancel_words = {
+        "cancel",
+        "never mind",
+        "nevermind",
+        "stop",
+        "skip"
     }
 
     # --------------------------------------------------
@@ -144,7 +158,10 @@ def respond(user_input):
     # --------------------------------------------------
 
     if not user_input:
-        if pending_update_key:
+        if pending_delete_key:
+            speak("Please answer yes or no.")
+
+        elif pending_update_key:
             speak("Please answer yes or no.")
 
         elif pending_memory_key:
@@ -157,7 +174,46 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 2. CONFIRM OR REJECT MEMORY UPDATE
+    # 2. CONFIRM OR REJECT MEMORY DELETION
+    # --------------------------------------------------
+
+    if pending_delete_key:
+        if user_input in confirmation_words:
+            key = pending_delete_key
+            name = get_display_name(key)
+
+            deleted = forget_memory(key)
+
+            pending_delete_key = None
+
+            if deleted:
+                # Clear related temporary context
+                if last_memory_key == key:
+                    last_memory_key = None
+
+                pending_memory_key = None
+                pending_update_key = None
+                pending_update_value = None
+
+                speak(f"I forgot your {name}.")
+            else:
+                speak(f"I couldn't find your {name} in memory.")
+
+            return
+
+        if user_input in rejection_words:
+            name = get_display_name(pending_delete_key)
+
+            pending_delete_key = None
+
+            speak(f"Okay, I kept your {name}.")
+            return
+
+        speak("Please answer yes or no.")
+        return
+
+    # --------------------------------------------------
+    # 3. CONFIRM OR REJECT MEMORY UPDATE
     # --------------------------------------------------
 
     if pending_update_key:
@@ -189,16 +245,8 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 3. CANCEL PENDING MEMORY REQUEST
+    # 4. CANCEL PENDING MEMORY REQUEST
     # --------------------------------------------------
-
-    cancel_words = {
-        "cancel",
-        "never mind",
-        "nevermind",
-        "stop",
-        "skip"
-    }
 
     if pending_memory_key and user_input in cancel_words:
         pending_memory_key = None
@@ -207,7 +255,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 4. CAPTURE PENDING MEMORY VALUE
+    # 5. CAPTURE PENDING MEMORY VALUE
     # --------------------------------------------------
 
     if pending_memory_key:
@@ -217,10 +265,9 @@ def respond(user_input):
         old_value = get_memory(key)
         name = get_display_name(key)
 
-        # Clear the missing-value request
         pending_memory_key = None
 
-        # If a different old value exists, ask for confirmation
+        # Different value already exists
         if old_value and old_value.lower() != value.lower():
             pending_update_key = key
             pending_update_value = value
@@ -231,7 +278,7 @@ def respond(user_input):
             )
             return
 
-        # The same value already exists
+        # Same value already exists
         if old_value and old_value.lower() == value.lower():
             last_memory_key = key
 
@@ -241,7 +288,7 @@ def respond(user_input):
             )
             return
 
-        # No old value exists
+        # New value
         remember(key, value)
 
         last_memory_key = key
@@ -250,15 +297,77 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 5. LEARN NEW INFORMATION
+    # 6. CONTEXT-BASED MEMORY DELETION
     # --------------------------------------------------
 
-    key, value = process_memory(user_input, original_input)
+    if user_input in {
+        "forget it",
+        "delete it",
+        "remove it"
+    }:
+        if not last_memory_key:
+            speak("I'm not sure what you want me to forget.")
+            return
+
+        old_value = get_memory(last_memory_key)
+        name = get_display_name(last_memory_key)
+
+        if not old_value:
+            speak(f"I don't have your {name} stored.")
+            return
+
+        pending_memory_key = None
+        pending_update_key = None
+        pending_update_value = None
+
+        pending_delete_key = last_memory_key
+
+        speak(
+            f"Should I forget that your "
+            f"{name} is {old_value}?"
+        )
+        return
+
+    # --------------------------------------------------
+    # 7. DETECT DIRECT MEMORY DELETION REQUEST
+    # --------------------------------------------------
+
+    delete_key = detect_delete_intent(user_input)
+
+    if delete_key:
+        old_value = get_memory(delete_key)
+        name = get_display_name(delete_key)
+
+        if not old_value:
+            speak(f"I don't have your {name} stored.")
+            return
+
+        # Prevent conflicting pending actions
+        pending_memory_key = None
+        pending_update_key = None
+        pending_update_value = None
+
+        pending_delete_key = delete_key
+
+        speak(
+            f"Should I forget that your "
+            f"{name} is {old_value}?"
+        )
+        return
+
+    # --------------------------------------------------
+    # 8. LEARN NEW INFORMATION
+    # --------------------------------------------------
+
+    key, value = process_memory(
+        user_input,
+        original_input
+    )
 
     if key:
         name = get_display_name(key)
 
-        # Pattern found, but value is missing
+        # Pattern detected, but value is missing
         if not value:
             pending_memory_key = key
 
@@ -267,7 +376,7 @@ def respond(user_input):
 
         old_value = get_memory(key)
 
-        # A different value already exists
+        # Different value already exists
         if old_value and old_value.lower() != value.lower():
             pending_update_key = key
             pending_update_value = value
@@ -278,7 +387,7 @@ def respond(user_input):
             )
             return
 
-        # The same value already exists
+        # Same value already exists
         if old_value and old_value.lower() == value.lower():
             last_memory_key = key
 
@@ -288,7 +397,7 @@ def respond(user_input):
             )
             return
 
-        # This is a new memory
+        # New memory
         remember(key, value)
 
         last_memory_key = key
@@ -298,7 +407,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 6. FOLLOW-UP CONTEXT UPDATES
+    # 9. FOLLOW-UP CONTEXT UPDATES
     # --------------------------------------------------
 
     if user_input.startswith("change it to "):
@@ -327,23 +436,28 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 7. CLEAR CONVERSATION CONTEXT
+    # 10. CLEAR CONVERSATION CONTEXT
     # --------------------------------------------------
 
     if user_input == "clear context":
         last_memory_key = None
         pending_memory_key = None
+
         pending_update_key = None
         pending_update_value = None
+
+        pending_delete_key = None
 
         speak("Conversation context cleared.")
         return
 
     # --------------------------------------------------
-    # 8. DETECT MEMORY QUESTIONS
+    # 11. DETECT MEMORY QUESTIONS
     # --------------------------------------------------
 
-    memory_key, confidence, tied_intents = detect_memory_intent(user_input)
+    memory_key, confidence, tied_intents = detect_memory_intent(
+        user_input
+    )
 
     if tied_intents:
         names = [
@@ -370,7 +484,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 9. MANUAL MEMORY COMMAND
+    # 12. MANUAL MEMORY COMMAND
     # --------------------------------------------------
 
     if user_input.startswith("remember "):
@@ -403,6 +517,16 @@ def respond(user_input):
             )
             return
 
+        if old_value and old_value.lower() == value.lower():
+            name = get_display_name(key)
+            last_memory_key = key
+
+            speak(
+                f"I already remember that your "
+                f"{name} is {old_value}."
+            )
+            return
+
         remember(key, value)
         last_memory_key = key
 
@@ -410,7 +534,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 10. GENERIC MEMORY RETRIEVAL
+    # 13. GENERIC MEMORY RETRIEVAL
     # --------------------------------------------------
 
     if user_input.startswith("what is "):
@@ -436,7 +560,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 11. HISTORY COMMANDS
+    # 14. HISTORY COMMANDS
     # --------------------------------------------------
 
     if user_input == "show history":
@@ -452,7 +576,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 12. OTHER COMMANDS
+    # 15. OTHER COMMANDS
     # --------------------------------------------------
 
     if user_input in command_map:
@@ -460,14 +584,14 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 13. CASUAL CONVERSATION
+    # 16. CASUAL CONVERSATION
     # --------------------------------------------------
 
     if handle_conversations(user_input):
         return
 
     # --------------------------------------------------
-    # 14. CONTROLLED FUZZY MEMORY SEARCH
+    # 17. CONTROLLED FUZZY MEMORY SEARCH
     # --------------------------------------------------
 
     memory_search_phrases = (
@@ -482,6 +606,8 @@ def respond(user_input):
 
         if key and value:
             name = get_display_name(key)
+            last_memory_key = key
+
             speak(f"I remember that your {name} is {value}.")
         else:
             speak("I couldn't find a matching memory.")
@@ -489,7 +615,7 @@ def respond(user_input):
         return
 
     # --------------------------------------------------
-    # 15. UNKNOWN INPUT
+    # 18. UNKNOWN INPUT
     # --------------------------------------------------
 
     speak("I don't understand that yet.")

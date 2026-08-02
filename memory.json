@@ -5,10 +5,6 @@
             "value": "nigga"
         },
         {
-            "key": "Favourite_Food",
-            "value": "ketchup"
-        },
-        {
             "key": "Dream_Company",
             "value": "Google Deepmind"
         },
@@ -27,6 +23,10 @@
         {
             "key": "Favourite_Language",
             "value": "C++"
+        },
+        {
+            "key": "Favourite_Food",
+            "value": "biriyani"
         }
     ]
 }
